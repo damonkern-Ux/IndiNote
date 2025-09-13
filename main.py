@@ -14,7 +14,7 @@ that are truly ours. Share ideas, find teammates, showcase projects, and \
 create alternatives or originals that India actually needs.\
 Collaborate. Innovate. Make in India."
 
-indinote = "\t\t     Version 0.1\n\nIndiNote by IndiSoft: a fast, distraction-free notepad for Indians by Indians."
+indinote = "\t\t     Version 0.2\n\nIndiNote by IndiSoft: a fast, distraction-free notepad for Indians by Indians."
 
 current_mode = "light"
 # -------------------------
