@@ -1,0 +1,11 @@
+Find & Replace – Search for text in the document and optionally replace it.
+
+Font Selection – Let users choose font family and size.
+
+About Indisoft and me.
+
+Recent Files – Dropdown or menu for last few opened files.
+
+Zoom In / Out – Change font size with Ctrl+Plus / Ctrl+Minus.
+
+Dark Mode / Light Mode – Toggle background/foreground colors.
