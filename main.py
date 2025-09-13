@@ -14,8 +14,9 @@ that are truly ours. Share ideas, find teammates, showcase projects, and \
 create alternatives or originals that India actually needs.\
 Collaborate. Innovate. Make in India."
 
-indinote = "IndiNote by IndiSoft: a fast, distraction-free notepad for Indians by Indians."
+indinote = "\t\t     Version 0.1\n\nIndiNote by IndiSoft: a fast, distraction-free notepad for Indians by Indians."
 
+current_mode = "light"
 # -------------------------
 # Main Window Setup
 # -------------------------
@@ -96,6 +97,38 @@ def status_update():
     ln_col()
 
 
+def toggle_mode():
+    global current_mode
+    
+    if current_mode == 'light':
+        text.config(bg="black", fg="white")
+        window.config(bg="black")
+        status_frame.config(bg="black")
+        status_right.config(bg="black", fg="white")
+        status_left.config(bg="black", fg="white")
+        menu.config(bg="black", fg="white", activebackground="gray", activeforeground="cyan")
+        text.config(insertbackground="white")  # cursor color
+        text.tag_configure("url", foreground="#4fc1ff", underline=True)
+        current_mode = 'dark'
+        edit_menu.entryconfig("Dark Mode", label="Light Mode")
+    
+    elif current_mode == 'dark':
+        text.config(bg="white", fg="black")
+        window.config(bg="white")
+        status_frame.config(bg="white")
+        status_right.config(bg="white", fg="black")
+        status_left.config(bg="white", fg="black")
+        menu.config(bg="white", fg="black")
+        text.config(insertbackground="blck")  # cursor color
+        text.tag_configure("url", foreground="#1a0dab", underline=True)
+        current_mode = 'light'
+        edit_menu.entryconfig("Light Mode", label="Dark Mode")
+
+
+def placeholder():
+    pass
+
+
 # -------------------------
 # URL Detection + Click
 # -------------------------
@@ -150,6 +183,13 @@ menu.add_cascade(label="Edit", menu=edit_menu)
 edit_menu.add_command(label="Undo", command=text.edit_undo)
 edit_menu.add_command(label="Redo", command=text.edit_redo)
 edit_menu.add_command(label="Word Wrap : On", command=lambda: toggle_wrap())
+
+# --- View Menu ----
+view_menu = tk.Menu(menu, tearoff=0)
+menu.add_cascade(label="View", menu=view_menu)
+view_menu.add_command(label="Zoom In", command=placeholder())
+view_menu.add_command(label="Zoon Out", command=placeholder())
+view_menu.add_command(label="Dark Mode", command=lambda: toggle_mode())
 
 # --- About Menu ---
 about_menu = tk.Menu(menu, tearoff=0)
