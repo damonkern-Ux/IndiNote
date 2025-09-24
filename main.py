@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from re import finditer as refinditer
+from tkinter import font
 from webbrowser import open as webopen
 
 
@@ -9,23 +10,33 @@ from webbrowser import open as webopen
 # -------------------------
 
 indisoft = "\t\t      r/indisoft\n\nFor India, By India. A safe space for devs, designers,\
-and dreamers to collaborate on one goal: building feature-rich Indian apps\
+and dreamers to collaborate on one goal: building feature-rich Indian apps \
 that are truly ours. Share ideas, find teammates, showcase projects, and \
 create alternatives or originals that India actually needs.\
 Collaborate. Innovate. Make in India."
 
-indinote = "\t\t     Version 0.2\n\nIndiNote by IndiSoft: a fast, distraction-free notepad for Indians by Indians."
+indinote = "\t\t     Version 0.3\n\nIndiNote by IndiSoft: a fast, distraction-free notepad for Indians by Indians."
+
+whats_new = "\t\t    What's New\n\n1. Find & Replace – Search for text and optionally replace it.\
+\n\n2. Font Selection – Let users choose font family and size.\
+\n\n3. Recent Files – Dropdown or menu for last few opened files.\
+\n\n4. Zoom In / Out – Change font size with Ctrl+Plus / Ctrl+Minus."
 
 current_mode = "light"
 # -------------------------
 # Main Window Setup
 # -------------------------
 window = tk.Tk()
+window.geometry("1280x720")
 window.title("IndiNote")
 
 # Text area (main editor)
 text = tk.Text(window, undo=True, wrap="word")
 text.pack(fill="both", expand=1)
+
+font_name, font_size = "Arial", 12
+
+text.config(font=(font_name, font_size))
 
 status_frame = tk.Frame(window, bd=1, relief="sunken")
 status_frame.pack(side="bottom", fill="x")
@@ -65,6 +76,11 @@ def save_file():
             messagebox.showerror("Save Error", str(e))  # error popup
 
 
+# -------------------------
+# App Handling Functions
+# -------------------------
+
+
 def toggle_wrap():
     """Word Wrap toggler"""
     if text.cget("wrap") == "none":
@@ -99,30 +115,108 @@ def status_update():
 
 def toggle_mode():
     global current_mode
-    
-    if current_mode == 'light':
+
+    if current_mode == "light":
         text.config(bg="black", fg="white")
         window.config(bg="black")
         status_frame.config(bg="black")
         status_right.config(bg="black", fg="white")
         status_left.config(bg="black", fg="white")
-        menu.config(bg="black", fg="white", activebackground="gray", activeforeground="cyan")
+        menu.config(
+            bg="black", fg="white", activebackground="gray", activeforeground="cyan"
+        )
         text.config(insertbackground="white")  # cursor color
         text.tag_configure("url", foreground="#4fc1ff", underline=True)
-        current_mode = 'dark'
-        edit_menu.entryconfig("Dark Mode", label="Light Mode")
-    
-    elif current_mode == 'dark':
+        current_mode = "dark"
+        view_menu.entryconfig("Dark Mode", label="Light Mode")
+
+    elif current_mode == "dark":
         text.config(bg="white", fg="black")
         window.config(bg="white")
         status_frame.config(bg="white")
         status_right.config(bg="white", fg="black")
         status_left.config(bg="white", fg="black")
         menu.config(bg="white", fg="black")
-        text.config(insertbackground="blck")  # cursor color
+        text.config(insertbackground="black")  # cursor color
         text.tag_configure("url", foreground="#1a0dab", underline=True)
-        current_mode = 'light'
-        edit_menu.entryconfig("Light Mode", label="Dark Mode")
+        current_mode = "light"
+        view_menu.entryconfig("Light Mode", label="Dark Mode")
+
+
+def zoom_in():
+    global font_name, font_size
+    font_size = font_size + 5
+    text.config(font=(font_name, font_size))
+
+
+def zoom_out():
+    global font_name, font_size
+    font_size = font_size - 5
+    text.config(font=(font_name, font_size))
+
+
+def font_name_size():
+    global font_size
+
+    def getter():
+        global font_name
+        font_name = font_var.get()  # Update the global variable with the selected value
+        text.config(font=(font_name, font_size))
+
+    font_window = tk.Toplevel(window)
+    font_window.geometry("300x50")
+    font_window.title("Font and Size")
+
+    # Create an OptionMenu with default fonts
+    default_fonts = [
+        "Courier",
+        "Fixedsys",
+        "sans-serif",  # usually Arial or Helvetica
+        "Times New Roman",
+        "Monaco",
+        "Consolas",
+        "Courier New",
+        "Comic Sans MS",
+        "Courier New Script",
+        "Great Vibes",
+        "Rockwell",
+    ]
+
+    # Use StringVar to bind the selected value to a variable
+    font_var = tk.StringVar()
+    font_var.set(default_fonts[0])  # default value
+
+    menu_down = tk.OptionMenu(font_window, font_var, *default_fonts)
+    menu_down.pack()
+
+    ok_button = tk.Button(font_window, text="Ok", command=lambda: getter())
+    ok_button.pack()
+
+
+def find_replace():
+    find_window = tk.Toplevel(window)
+    find_window.geometry("300x70")
+    find_window.title("Font and Size")
+    find_window.focus_set()
+
+    def replacer():
+        find_str = find_entry.get()
+        repl_str = replace_entry.get()
+
+        content = text.get("1.0", tk.END).replace(find_str, repl_str)
+        text.delete("1.0", tk.END)
+        text.insert("1.0", content)
+
+    find_text, repl_text = tk.StringVar(), tk.StringVar()
+
+    find_entry = tk.Entry(find_window, textvariable=find_text)
+    find_entry.pack()
+
+    replace_entry = tk.Entry(find_window, textvariable=repl_text)
+    replace_entry.pack()
+
+    ok_button = tk.Button(find_window, text="Replace", command=lambda: replacer())
+    ok_button.pack()
 
 
 def placeholder():
@@ -161,6 +255,10 @@ window.bind("<Control-o>", lambda event: open_file())
 window.bind("<Control-s>", lambda event: save_file())
 window.bind("<Control-w>", lambda event: toggle_wrap())
 window.bind("<Control-q>", lambda event: window.quit())
+window.bind("<Control-=>", lambda event: zoom_in())
+window.bind("<Control-minus>", lambda event: zoom_out())
+window.bind("<Control-g>", lambda event: font_name_size())
+window.bind("<Control-f>", lambda event: find_replace())
 
 
 # -------------------------
@@ -180,15 +278,17 @@ file_menu.add_command(label="Exit", command=window.quit)
 # --- Edit Menu ---
 edit_menu = tk.Menu(menu, tearoff=0)
 menu.add_cascade(label="Edit", menu=edit_menu)
-edit_menu.add_command(label="Undo", command=text.edit_undo)
-edit_menu.add_command(label="Redo", command=text.edit_redo)
+edit_menu.add_command(label="Undo", command=lambda: text.edit_undo)
+edit_menu.add_command(label="Redo", command=lambda: text.edit_redo)
+edit_menu.add_command(label="Find & Replace", command=lambda: find_replace())
 edit_menu.add_command(label="Word Wrap : On", command=lambda: toggle_wrap())
 
 # --- View Menu ----
 view_menu = tk.Menu(menu, tearoff=0)
 menu.add_cascade(label="View", menu=view_menu)
-view_menu.add_command(label="Zoom In", command=placeholder())
-view_menu.add_command(label="Zoon Out", command=placeholder())
+view_menu.add_command(label="Zoom In", command=lambda: zoom_in())
+view_menu.add_command(label="Zoon Out", command=lambda: zoom_out())
+view_menu.add_command(label="Font & Size", command=lambda: font_name_size())
 view_menu.add_command(label="Dark Mode", command=lambda: toggle_mode())
 
 # --- About Menu ---
@@ -201,6 +301,10 @@ about_menu.add_command(
 about_menu.add_command(
     label="Indisoft",
     command=lambda: messagebox.showinfo(title="about Indisoft", message=indisoft),
+)
+about_menu.add_command(
+    label="What's New",
+    command=lambda: messagebox.showinfo(title="about Indisoft", message=whats_new),
 )
 
 # -------------------------
