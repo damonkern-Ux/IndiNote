@@ -49,15 +49,20 @@ status_right = tk.Label(
 )
 status_right.pack(side="right")
 
+def load_file(filepath):
+    for encoding in ("utf-8", "utf-16", "utf-32"):
+        try:
+            with open(filepath, "r", encoding=encoding) as f:
+                text.insert(tk.END, f.read())
+            window.title(f"IndiNote - {filepath}")
+            return
+        except Exception:
+            continue
+    messagebox.showerror("Error", "Cannot open file: Unsupported encoding")
+
 # Check if a file was opened with the app
 if len(sys.argv) > 1:
-    filepath = sys.argv[1]
-    try:
-        with open(filepath, "r", encoding="utf-32") as f:
-            text.insert(tk.END, f.read())
-        window.title(f"IndiNote - {filepath}")
-    except Exception as e:
-        messagebox.showerror("Error", f"Could not open file:\n{e}")
+    load_file(sys.argv[1])
 # -------------------------
 # File Handling Functions
 # -------------------------
