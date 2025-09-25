@@ -1,3 +1,4 @@
+import sys
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from re import finditer as refinditer
@@ -48,7 +49,15 @@ status_right = tk.Label(
 )
 status_right.pack(side="right")
 
-
+# Check if a file was opened with the app
+if len(sys.argv) > 1:
+    filepath = sys.argv[1]
+    try:
+        with open(filepath, "r", encoding="utf-32") as f:
+            text.insert(tk.END, f.read())
+        window.title(f"IndiNote - {filepath}")
+    except Exception as e:
+        messagebox.showerror("Error", f"Could not open file:\n{e}")
 # -------------------------
 # File Handling Functions
 # -------------------------
