@@ -195,29 +195,40 @@ def font_name_size():
 
 def find_replace():
     find_window = tk.Toplevel(window)
-    find_window.geometry("300x70")
-    find_window.title("Font and Size")
-    find_window.focus_set()
+    find_window.geometry("320x120")
+    find_window.title("Find & Replace")
+    find_window.resizable(False, False)
+    find_window.configure(bg="#f0f0f0")
+    find_window.transient(window)  # keeps it above main
+    find_window.grab_set()         # modal behavior
 
+    # --- Labels ---
+    tk.Label(find_window, text="Find:", bg="#f0f0f0").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+    tk.Label(find_window, text="Replace:", bg="#f0f0f0").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+
+    # --- Entries ---
+    find_text, repl_text = tk.StringVar(), tk.StringVar()
+    find_entry = tk.Entry(find_window, textvariable=find_text, width=25)
+    replace_entry = tk.Entry(find_window, textvariable=repl_text, width=25)
+    find_entry.grid(row=0, column=1, padx=5, pady=5)
+    replace_entry.grid(row=1, column=1, padx=5, pady=5)
+
+    # --- Replace Logic ---
     def replacer():
         find_str = find_entry.get()
         repl_str = replace_entry.get()
-
         content = text.get("1.0", tk.END).replace(find_str, repl_str)
         text.delete("1.0", tk.END)
         text.insert("1.0", content)
 
-    find_text, repl_text = tk.StringVar(), tk.StringVar()
+    # --- Buttons ---
+    button_frame = tk.Frame(find_window, bg="#f0f0f0")
+    button_frame.grid(row=2, column=0, columnspan=2, pady=10)
+    tk.Button(button_frame, text="Replace", command=replacer, width=10).pack(side="left", padx=5)
+    tk.Button(button_frame, text="Close", command=find_window.destroy, width=10).pack(side="right", padx=5)
 
-    find_entry = tk.Entry(find_window, textvariable=find_text)
-    find_entry.pack()
-
-    replace_entry = tk.Entry(find_window, textvariable=repl_text)
-    replace_entry.pack()
-
-    ok_button = tk.Button(find_window, text="Replace", command=lambda: replacer())
-    ok_button.pack()
-
+def print_file():
+    pass
 
 def placeholder():
     pass
